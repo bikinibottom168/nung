@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\ServiceProvider;
 use App\Setting;
 use Config;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,14 +16,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if(Schema::hasTable('settings')){
+        if (Schema::hasTable('settings')) {
             $data = Setting::find(1);
-            if($data->ssl == 1){
-                   \URL::forceScheme('https');
-               }
+            if ($data->ssl == 1) {
+                \URL::forceScheme('https');
+            }
         }
-
-        
     }
 
     /**

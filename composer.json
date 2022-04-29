@@ -1,32 +1,38 @@
 {
     "name": "laravel/laravel",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.6.4",
+        "php": "^7.2|^8.0",
         "anhskohbo/no-captcha": "^3.4",
         "fabpot/goutte": "^4.0",
         "guzzle/http": "^3.9",
         "guzzlehttp/guzzle": "^6.3",
-        "intervention/image": "^2.5",
+        "intervention/image": "^2.7",
         "jenssegers/agent": "^2.6",
-        "jorenvanhocht/laravel-share": "^4.1",
-        "laravel/framework": "5.8.*",
-        "laravel/socialite": "^3.0",
-        "laravel/tinker": "~1.0",
-        "laravelcollective/html": "5.*",
+        "jorenvanhocht/laravel-share": "^4.2",
+        "laravel/framework": "^6.20",
+        "laravel/socialite": "^5.5",
+        "laravel/tinker": "^2.5",
+        "laravelcollective/html": "^6.3",
         "silber/page-cache": "^1.0",
         "tholu/php-packer": "^0.2.0",
-        "unisharp/laravel-filemanager": "^2.4"
+        "unisharp/laravel-filemanager": "^2.4",
+        "fideloper/proxy": "^4.4"
     },
     "require-dev": {
-        "fzaninotto/faker": "~1.4",
         "laravel-lang/lang": "^10.7",
-        "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~5.7",
-        "xethron/migrations-generator": "^2.0"
+        "mockery/mockery": "^1.0",
+        "phpunit/phpunit": "^8.5.8|^9.3.3",
+        "xethron/migrations-generator": "^2.0",
+        "fakerphp/faker": "^1.9.1",
+        "facade/ignition": "^1.16.4",
+        "nunomaduro/collision": "^3.0"
     },
     "autoload": {
         "classmap": [

@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class genre extends Model
 {
     protected $fillable = [
-            'title_category'
+        'title_category',
     ];
 
     public function CategoryMovie()
     {
-        return $this->hasMany('App\Categorys_movies');
+        return $this->hasMany(\App\Categorys_movies::class);
     }
 }

@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-
-use App\User;
-use App\Setting;
-use App\tmpay;
 use App\CategoryTv;
 use App\Seo;
+use App\Setting;
+use App\tmpay;
+use App\User;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use URL;
 
 class InstallController extends Controller
 {
-    
     /**
      * Display a listing of the resource.
      *
@@ -25,13 +23,12 @@ class InstallController extends Controller
      */
     public function index()
     {
-        if(Schema::hasTable('settings')){
+        if (Schema::hasTable('settings')) {
             return redirect()->route('home');
         }
+
         return view('install');
     }
-
-
 
     public function store(Request $request)
     {
@@ -57,7 +54,7 @@ class InstallController extends Controller
         //     $data['admin']->admin = 1;
         //     $data['admin']->vip = "2025-01-01 01:00:00";
         //     $data['admin']->save();
-        
+
         // // ======================================
         // //      สร้าง Table menu
         // // ======================================
@@ -96,7 +93,7 @@ class InstallController extends Controller
         //     $table->text('image')->nullable();
         //     $table->timestamps();
         // });
-        
+
         // // ======================================
         // //      สร้าง Table Playlist
         // // ======================================
@@ -130,8 +127,6 @@ class InstallController extends Controller
         //         $table->integer('status')->default(0);
         //         $table->timestamps();
         //     });
-
-
 
         // // ======================================
         // //      สร้าง Table Movie
@@ -184,7 +179,6 @@ class InstallController extends Controller
         //         $table->float('score')->default(0)->nullable();
         //         $table->timestamps();
         //     });
-
 
         // // ======================================
         // //      สร้าง Table banners Ads
@@ -287,7 +281,6 @@ class InstallController extends Controller
         //     $data['setting']->imdb = 0;
         //     $data['setting']->save();
 
-        
         // // ======================================
         // //      สร้าง Table Seo
         // // ======================================
@@ -316,6 +309,4 @@ class InstallController extends Controller
 
         //     return redirect()->route('admin.login');
     }
-
-
 }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\User;
 use App\Setting;
+use App\User;
 use Auth;
+use Illuminate\Http\Request;
 
 class AdminMemberController extends Controller
 {
@@ -14,27 +14,27 @@ class AdminMemberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
     public function __construct()
     {
         $this->middleware('admin');
     }
 
-     public function Main()
-     {
-         $data['infosetting'] = Setting::first();
-         return $data;
-     }
+    public function Main()
+    {
+        $data['infosetting'] = Setting::first();
+
+        return $data;
+    }
+
     public function index()
     {
-        if(!Auth::check())
-        {
+        if (! Auth::check()) {
             return redirect()->route('admin.login');
         }
 
         $data = $this->Main();
 
-        $data['header_title'] = "สมาชิกทั้งหมด";
+        $data['header_title'] = 'สมาชิกทั้งหมด';
         $data['request'] = User::orderBy('id', 'desc')
             ->paginate(10);
 
@@ -49,7 +49,8 @@ class AdminMemberController extends Controller
     public function create()
     {
         $data = $this->Main();
-        $data['header_title'] = "เพิ่มแอดมิน";
+        $data['header_title'] = 'เพิ่มแอดมิน';
+
         return view('admin.page.member.create', $data);
     }
 
@@ -61,25 +62,23 @@ class AdminMemberController extends Controller
      */
     public function store(Request $request)
     {
-
         $data = User::whereEmail($request->email)->first();
 
-        if(!$data)
-        {
+        if (! $data) {
             $data = new User;
             $data->email = $request->email;
             $data->password = \Hash::make($request->password);
             $data->admin = 1;
             $data->save();
 
-            log_post("Create","เพิ่มสมาชิก $data->email",Auth::user()->email);
+            log_post('Create', "เพิ่มสมาชิก $data->email", Auth::user()->email);
 
             session()->flash('message', 'เพิ่มแอดมินเรียบร้อย');
+
             return redirect()->route('admin.member');
-        }
-        else
-        {
+        } else {
             session()->flash('message', 'มีชื่อผู้ใช้นี้แล้ว');
+
             return redirect()->route('admin.member');
         }
     }
@@ -104,7 +103,7 @@ class AdminMemberController extends Controller
     public function edit($id)
     {
         $data = $this->Main();
-        $data['header_title'] = "แก้ไขแอดมิน";
+        $data['header_title'] = 'แก้ไขแอดมิน';
         $data['request'] = User::find($id);
 
         return view('admin.page.member.edit', $data);
@@ -122,9 +121,10 @@ class AdminMemberController extends Controller
         $data = User::find($id)
             ->update(['password' => \Hash::make($request->password)]);
 
-        log_post("Update","แก้ไขข้อมูลสมาชิก $data->email",Auth::user()->email);
+        log_post('Update', "แก้ไขข้อมูลสมาชิก $data->email", Auth::user()->email);
 
         session()->flash('message', 'แก้ไขแอดมินเรียบร้อย');
+
         return redirect()->route('admin.member');
     }
 
@@ -138,9 +138,10 @@ class AdminMemberController extends Controller
     {
         $data = User::where('id', $id)->delete();
 
-        log_post("Delete","ลบสมาชิก $id",Auth::user()->email);
+        log_post('Delete', "ลบสมาชิก $id", Auth::user()->email);
 
         session()->flash('message', 'ลบเรียบร้อย');
+
         return redirect()->route('admin.member');
     }
 }

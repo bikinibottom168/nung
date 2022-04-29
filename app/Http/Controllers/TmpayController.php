@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Schema;
-use Carbon\Carbon;
-
-use App\Setting;
-use App\tmpay;
 use App\Log;
 use App\Logregister as logre;
+use App\Setting;
+use App\tmpay;
 use App\User;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class TmpayController extends Controller
 {
@@ -21,11 +20,11 @@ class TmpayController extends Controller
     {
         $data = Log::where('tmpay_trans_id', $request->transaction_id);
 
-        if($data->count() == 0){
+        if ($data->count() == 0) {
             return 'ERROR';
         }
 
-        if($request->status == 1){
+        if ($request->status == 1) {
             // =================================================
             //      อัพเดท Log
             // =================================================
@@ -33,7 +32,7 @@ class TmpayController extends Controller
                 ->where('tmpay_trans_id', $request->transaction_id)
                 ->update([
                     'tmpay_status' => 1,
-                    'tmpay_price' => $request->real_amount
+                    'tmpay_price' => $request->real_amount,
                 ]);
 
             // =================================================
@@ -60,29 +59,27 @@ class TmpayController extends Controller
             $update_user = DB::table('users')
                 ->where('id', $user_id->tmpay_id_user)
                 ->update([
-                    'point' => $dayForGet->date
+                    'point' => $dayForGet->date,
                 ]);
-
 
             echo 'SUCCEED|UID='.$user_id->tmpay_id_user;
-
-        }else if($request->status == 3){
+        } elseif ($request->status == 3) {
             DB::table('log')
                 ->where('tmpay_trans_id', $request->transaction_id)
                 ->update([
-                    'tmpay_status' => 3
+                    'tmpay_status' => 3,
                 ]);
-        }else if($request->status == 4){
+        } elseif ($request->status == 4) {
             DB::table('log')
                 ->where('tmpay_trans_id', $request->transaction_id)
                 ->update([
-                    'tmpay_status' => 4
+                    'tmpay_status' => 4,
                 ]);
-        }else if($request->status == 5){
+        } elseif ($request->status == 5) {
             DB::table('log')
                 ->where('tmpay_trans_id', $request->transaction_id)
                 ->update([
-                    'tmpay_status' => 5
+                    'tmpay_status' => 5,
                 ]);
         }
     }
@@ -95,14 +92,13 @@ class TmpayController extends Controller
     */
     public function tmpay_register(Request $request)
     {
-
         $data = logre::where('tmpay_trans_id', $request->transaction_id);
 
-        if($data->count() == 0){
+        if ($data->count() == 0) {
             return 'ERROR';
         }
 
-        if($request->status == 1){
+        if ($request->status == 1) {
             // =================================================
             //      อัพเดท Log
             // =================================================
@@ -110,7 +106,7 @@ class TmpayController extends Controller
                 ->where('tmpay_trans_id', $request->transaction_id)
                 ->update([
                     'tmpay_status' => 1,
-                    'tmpay_price' => $request->real_amount
+                    'tmpay_price' => $request->real_amount,
                 ]);
 
             // =================================================
@@ -126,7 +122,6 @@ class TmpayController extends Controller
             $dayForGet = DB::table('tmpay')
                 ->where('price', $request->real_amount)
                 ->first();
-
 
             $create_user = new User;
             $create_user->email = $user_id->username;
@@ -152,28 +147,25 @@ class TmpayController extends Controller
             //         'vip' => Carbon::now()->addDays($dayForGet->date)
             //     ]);
 
-
             echo 'SUCCEED|UID='.$user_id->username;
-
-        }else if($request->status == 3){
+        } elseif ($request->status == 3) {
             DB::table('logre')
                 ->where('tmpay_trans_id', $request->transaction_id)
                 ->update([
-                    'tmpay_status' => 3
+                    'tmpay_status' => 3,
                 ]);
-        }else if($request->status == 4){
+        } elseif ($request->status == 4) {
             DB::table('logre')
                 ->where('tmpay_trans_id', $request->transaction_id)
                 ->update([
-                    'tmpay_status' => 4
+                    'tmpay_status' => 4,
                 ]);
-        }else if($request->status == 5){
+        } elseif ($request->status == 5) {
             DB::table('logre')
                 ->where('tmpay_trans_id', $request->transaction_id)
                 ->update([
-                    'tmpay_status' => 5
+                    'tmpay_status' => 5,
                 ]);
         }
     }
-
 }

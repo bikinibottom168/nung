@@ -2,11 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\movie;
+use Route;
+use Silber\PageCache\Middleware\CacheResponse as BaseCacheResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Silber\PageCache\Middleware\CacheResponse as BaseCacheResponse;
-use Route;
-use App\movie;
 
 class CacheResponse extends BaseCacheResponse
 {
@@ -19,17 +19,15 @@ class CacheResponse extends BaseCacheResponse
             return false;
         }
 
-        if(Route::is('home') || Route::is('year'))
-        {
+        if (Route::is('home') || Route::is('year')) {
             // return false;
             return parent::shouldCache($request, $response);
-        }
-        else if(Route::is('movie'))
-        {
+        } elseif (Route::is('movie')) {
             // dd($request['requestUri']);
             // $find_id = movie::find()
             return false;
         }
+
         return false;
         // return parent::shouldCache($request, $response);
     }

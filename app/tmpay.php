@@ -9,6 +9,6 @@ class tmpay extends Model
     protected $table = 'tmpay';
 
     protected $fillable = [
-        'price','date','promotion'
+        'price', 'date', 'promotion',
     ];
 }

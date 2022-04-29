@@ -107,7 +107,6 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
-
     /*
     |--------------------------------------------------------------------------
     | Logging Configuration
@@ -121,7 +120,7 @@ return [
     |
     */
 
-    'log' => "daily",
+    'log' => 'daily',
 
     // 'log_level' => env('APP_LOG_LEVEL', 'debug'),
     'log_max_files' => 5,
@@ -207,6 +206,7 @@ return [
     'aliases' => [
 
         'App' => Illuminate\Support\Facades\App::class,
+        'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
         'Blade' => Illuminate\Support\Facades\Blade::class,
@@ -236,6 +236,7 @@ return [
         'Schema' => Illuminate\Support\Facades\Schema::class,
         'Session' => Illuminate\Support\Facades\Session::class,
         'Storage' => Illuminate\Support\Facades\Storage::class,
+        'Str' => Illuminate\Support\Str::class,
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,

@@ -7,16 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Categorys_movies extends Model
 {
     protected $fillable = [
-        'category_id','movie_id'
+        'category_id', 'movie_id',
     ];
 
     public function genre()
     {
-        return $this->belongTo('App\genre');
+        return $this->belongTo(\App\genre::class);
     }
 
     public function movie()
     {
-        return $this->belongTo('App\movie');
+        return $this->belongTo(\App\movie::class);
     }
 }

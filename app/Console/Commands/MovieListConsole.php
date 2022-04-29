@@ -38,7 +38,7 @@ class MovieListConsole extends Command
     public function handle()
     {
         $movies = \App\movie::all();
-        $headers = ['#','title'];
-        $this->table($headers,$movies);
+        $headers = ['#', 'title'];
+        $this->table($headers, $movies);
     }
 }

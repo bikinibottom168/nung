@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Intervention\Image\ImageManager;
-use GuzzleHttp\Client;
 use App\Request as req;
 use App\Setting;
 use Auth;
-
+use GuzzleHttp\Client;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
 
 class AdminRequestController extends Controller
 {
@@ -17,27 +17,27 @@ class AdminRequestController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
     public function __construct()
     {
         $this->middleware('admin');
     }
 
-     public function Main()
-     {
-         $data['infosetting'] = Setting::first();
-         return $data;
-     }
+    public function Main()
+    {
+        $data['infosetting'] = Setting::first();
+
+        return $data;
+    }
 
     public function index()
     {
-        if(!Auth::check())
-        {
+        if (! Auth::check()) {
             return redirect()->route('admin.login');
         }
         $data = $this->Main();
-        $data['header_title'] = "ขอหนัง";
-        $data['req'] = req::orderBy('updated_at','desc')->paginate(15);
+        $data['header_title'] = 'ขอหนัง';
+        $data['req'] = req::orderBy('updated_at', 'desc')->paginate(15);
+
         return view('admin.page.request.request', $data);
     }
 
@@ -49,9 +49,10 @@ class AdminRequestController extends Controller
     public function create()
     {
         $data = $this->Main();
-        $data['header_title'] = "เพิ่มทีวี";
+        $data['header_title'] = 'เพิ่มทีวี';
         $data['setting'] = Setting::find(1);
-        return view('admin.page.tv.create',$data);
+
+        return view('admin.page.tv.create', $data);
     }
 
     /**
@@ -74,32 +75,32 @@ class AdminRequestController extends Controller
         // ถ้ามีการอัพรูป จะ resize
         //
         // ==============================================================
-        if($request->hasFile('file')){
+        if ($request->hasFile('file')) {
             $image = $request->file('file');
             $filename = $image->getClientOriginalName();
-            $newFilename = str_random(11).str_random(20).$filename;
-            $newFilename = str_replace(' ','_',$newFilename);
+            $newFilename = Str::random(11).Str::random(20).$filename;
+            $newFilename = str_replace(' ', '_', $newFilename);
             // ========================================
             // หากเป็น Product จะไม่ใช้ public_path();
             // ========================================
             $path = 'images/tv/';
-            if(env('APP_ENV') == 'production'){
+            if (env('APP_ENV') == 'production') {
                 $path = 'images/tv/';
-            }else if(env('APP_ENV') == 'local'){
+            } elseif (env('APP_ENV') == 'local') {
                 $path = public_path('images/tv/');
             }
 
             $image_save = new ImageManager; // เรียกใช้ object เพราะไม่สามารถเรียกแบบ static ได้
             $image_save->make($image->getRealPath())
-                ->resize(162,108)
+                ->resize(162, 108)
                 ->save($path.$newFilename, 90); // ลด Optimize Image
             $data->image = 'images/tv/'.$newFilename;
         }
 
         $data->save();
 
-
         session()->flash('message', 'เพิ่มช่องทีวีเรียบร้อย');
+
         return redirect()->route('admin.tv');
     }
 
@@ -139,32 +140,32 @@ class AdminRequestController extends Controller
         // ถ้ามีการอัพรูป จะ resize
         //
         // ==============================================================
-        if($request->hasFile('file')){
+        if ($request->hasFile('file')) {
             $image = $request->file('file');
             $filename = $image->getClientOriginalName();
-            $newFilename = str_random(11).str_random(20).$filename;
-            $newFilename = str_replace(' ','_',$newFilename);
+            $newFilename = Str::random(11).Str::random(20).$filename;
+            $newFilename = str_replace(' ', '_', $newFilename);
             // ========================================
             // หากเป็น Product จะไม่ใช้ public_path();
             // ========================================
             $path = 'images/tv/';
-            if(env('APP_ENV') == 'production'){
+            if (env('APP_ENV') == 'production') {
                 $path = 'images/tv/';
-            }else if(env('APP_ENV') == 'local'){
+            } elseif (env('APP_ENV') == 'local') {
                 $path = public_path('images/tv/');
             }
 
             $image_save = new ImageManager; // เรียกใช้ object เพราะไม่สามารถเรียกแบบ static ได้
             $image_save->make($image->getRealPath())
-                ->resize(162,108)
+                ->resize(162, 108)
                 ->save($path.$newFilename, 90); // ลด Optimize Image
             $data->image = 'images/tv/'.$newFilename;
         }
 
         $data->update();
 
-
         session()->flash('message', 'แก้ไขช่องทีวีเรียบร้อย');
+
         return redirect()->route('admin.tv');
     }
 
@@ -179,6 +180,7 @@ class AdminRequestController extends Controller
         $data = req::find($id)->delete();
 
         session()->flash('message', 'ลบเรียบร้อย');
+
         return redirect()->route('admin.request');
     }
 }

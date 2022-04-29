@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Log;
 use App\movie;
+use App\Request as req;
 use App\Setting;
 use App\User;
-use App\Log;
-use App\Request as req;
-use Carbon\Carbon;
 use Auth;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
@@ -25,54 +25,54 @@ class AdminController extends Controller
 
     /**
      * movie = หนัง,category = หมวดหมู่หนัง, member = สมาชิก,topup = เติมเงิน,setting = ตั้งค่า, help = ช่วยเหลือ/วิธีใช้
-     *
      */
-
     public function Main()
     {
         $data['infosetting'] = Setting::first();
-
 
         return $data;
     }
 
     public function index()
     {
-        if(!Auth::check())
-        {
+        if (! Auth::check()) {
             return redirect()->route('admin.login');
         }
 
         $data = $this->Main();
 
-        $data['user_online'] = User::where([['status_login', '=', '1'],['login_expire', '>=', Carbon::now()->timestamp]])->count();
+        $data['user_online'] = User::where([['status_login', '=', '1'], ['login_expire', '>=', Carbon::now()->timestamp]])->count();
         $data['user_last'] = User::orderBy('id', 'desc')->limit(3)->get();
         $data['log_topup_last'] = Log::orderBy('id', 'desc')->limit(3)->get();
-        $data['header_title'] = "หน้าแรก";
+        $data['header_title'] = 'หน้าแรก';
+
         return view('admin.page.home', $data);
     }
-
 
     public function category()
     {
         $data = $this->Main();
-        $data['header_title'] = "หมวดหมู่";
+        $data['header_title'] = 'หมวดหมู่';
+
         return view('admin.page.category', $data);
     }
 
     public function member()
     {
         $data = $this->Main();
-        $data['header_title'] = "สมาชิก";
+        $data['header_title'] = 'สมาชิก';
+
         return view('admin.page.member', $data);
     }
 
     public function topup()
     {
         $data = $this->Main();
-        $data['header_title'] = "ตั้งค่าเติมเงิน";
+        $data['header_title'] = 'ตั้งค่าเติมเงิน';
+
         return view('admin.page.topup', $data);
     }
+
     /**
      * Show the form for creating a new resource.
      *

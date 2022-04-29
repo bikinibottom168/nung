@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
 use App\User;
+use Closure;
 
 class Ajax
 {
@@ -16,22 +16,15 @@ class Ajax
      */
     public function handle($request, Closure $next)
     {
-        if($request->user_token)
-        {
+        if ($request->user_token) {
             $user = User::where('remember_token', $request->user_token)->first();
 
-            if(!$user)
-            {
+            if (! $user) {
                 return abort(403);
-            }
-            else
-            {
-                if($user->admin == "1")
-                {
+            } else {
+                if ($user->admin == '1') {
                     return $next($request);
-                }
-                else
-                {
+                } else {
                     return abort(403);
                 }
             }
