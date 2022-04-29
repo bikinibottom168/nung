@@ -12,6 +12,6 @@ class movie extends Model
 
     public function CategoryMovie()
     {
-        return $this->hasMany('App\Categorys_movies');
+        return $this->hasMany(\App\Categorys_movies::class);
     }
 }

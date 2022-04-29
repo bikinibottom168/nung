@@ -12,11 +12,11 @@ class Categorys_movies extends Model
 
     public function genre()
     {
-        return $this->belongTo('App\genre');
+        return $this->belongTo(\App\genre::class);
     }
 
     public function movie()
     {
-        return $this->belongTo('App\movie');
+        return $this->belongTo(\App\movie::class);
     }
 }
