@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use App\Indexsetting;
 use App\Setting;
 use Auth;
@@ -103,7 +104,7 @@ class AdminSettingindexController extends Controller
         if ($request->hasFile('file1')) {
             $image = $request->file('file1');
             $filename = $image->getClientOriginalName();
-            $newFilename = str_random(11).str_random(20).$filename;
+            $newFilename = Str::random(11).Str::random(20).$filename;
             $newFilename = str_replace(' ', '_', $newFilename);
             // ========================================
             // หากเป็น Product จะไม่ใช้ public_path();
@@ -125,7 +126,7 @@ class AdminSettingindexController extends Controller
         if ($request->hasFile('file2')) {
             $image = $request->file('file2');
             $filename = $image->getClientOriginalName();
-            $newFilename = str_random(11).str_random(20).$filename;
+            $newFilename = Str::random(11).Str::random(20).$filename;
             $newFilename = str_replace(' ', '_', $newFilename);
             // ========================================
             // หากเป็น Product จะไม่ใช้ public_path();
@@ -147,7 +148,7 @@ class AdminSettingindexController extends Controller
         if ($request->hasFile('file3')) {
             $image = $request->file('file3');
             $filename = $image->getClientOriginalName();
-            $newFilename = str_random(11).str_random(20).$filename;
+            $newFilename = Str::random(11).Str::random(20).$filename;
             $newFilename = str_replace(' ', '_', $newFilename);
             // ========================================
             // หากเป็น Product จะไม่ใช้ public_path();
@@ -169,7 +170,7 @@ class AdminSettingindexController extends Controller
         if ($request->hasFile('file4')) {
             $image = $request->file('file4');
             $filename = $image->getClientOriginalName();
-            $newFilename = str_random(11).str_random(20).$filename;
+            $newFilename = Str::random(11).Str::random(20).$filename;
             $newFilename = str_replace(' ', '_', $newFilename);
             // ========================================
             // หากเป็น Product จะไม่ใช้ public_path();
@@ -191,7 +192,7 @@ class AdminSettingindexController extends Controller
         if ($request->hasFile('file5')) {
             $image = $request->file('file5');
             $filename = $image->getClientOriginalName();
-            $newFilename = str_random(11).str_random(20).$filename;
+            $newFilename = Str::random(11).Str::random(20).$filename;
             $newFilename = str_replace(' ', '_', $newFilename);
             // ========================================
             // หากเป็น Product จะไม่ใช้ public_path();

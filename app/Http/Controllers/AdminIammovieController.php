@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use App\Categorys_movies as categorys;
 use App\genre;
 use App\Http\Controllers\CheckTableController as checkTable;
@@ -210,7 +211,7 @@ class AdminIammovieController extends Controller
         if ($request->hasFile('file')) {
             $image = $request->file('file');
             $filename = $image->getClientOriginalName();
-            $newFilename = str_random(11).str_random(20).$filename;
+            $newFilename = Str::random(11).Str::random(20).$filename;
             $newFilename = str_replace(' ', '_', $newFilename);
             // ========================================
             // หากเป็น Product จะไม่ใช้ public_path();
@@ -233,7 +234,7 @@ class AdminIammovieController extends Controller
         if ($request->hasFile('file_poster')) {
             $image_2 = $request->file('file_poster');
             $filename_2 = $image_2->getClientOriginalName();
-            $newFilename_2 = str_random(11).str_random(20).$filename_2;
+            $newFilename_2 = Str::random(11).Str::random(20).$filename_2;
             $newFilename_2 = str_replace(' ', '_', $newFilename_2);
             // ========================================
             // หากเป็น Product จะไม่ใช้ public_path();
@@ -525,7 +526,7 @@ class AdminIammovieController extends Controller
         if ($request->hasFile('file')) {
             $image = $request->file('file');
             $filename = $image->getClientOriginalName();
-            $newFilename = str_random(11).str_random(20).$filename;
+            $newFilename = Str::random(11).Str::random(20).$filename;
             $newFilename = str_replace(' ', '_', $newFilename);
             $path = 'images/movie/';
             if (env('APP_ENV') == 'production') {
@@ -544,7 +545,7 @@ class AdminIammovieController extends Controller
         if ($request->hasFile('file_poster')) {
             $image = $request->file('file_poster');
             $filename = $image->getClientOriginalName();
-            $newFilename = str_random(11).str_random(20).$filename;
+            $newFilename = Str::random(11).Str::random(20).$filename;
             $newFilename = str_replace(' ', '_', $newFilename);
             $path = 'images/movie/';
             if (env('APP_ENV') == 'production') {

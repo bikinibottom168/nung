@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use App\Playlist;
 use App\Setting;
 use Auth;
@@ -86,7 +87,7 @@ class AdminPlaylistController extends Controller
         if ($request->hasFile('image_poster')) {
             $image = $request->file('image_poster');
             $filename = $image->getClientOriginalName();
-            $newFilename = str_random(11).str_random(20).$filename;
+            $newFilename = Str::random(11).Str::random(20).$filename;
             $newFilename = str_replace(' ', '_', $newFilename);
             $path = 'images/playlist/';
             if (env('APP_ENV') == 'production') {
@@ -161,7 +162,7 @@ class AdminPlaylistController extends Controller
         if ($request->hasFile('image_poster')) {
             $image = $request->file('image_poster');
             $filename = $image->getClientOriginalName();
-            $newFilename = str_random(11).str_random(20).$filename;
+            $newFilename = Str::random(11).Str::random(20).$filename;
             $newFilename = str_replace(' ', '_', $newFilename);
             $path = 'images/playlist/';
             if (env('APP_ENV') == 'production') {

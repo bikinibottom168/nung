@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use App\Setting;
 use Auth;
 use Carbon\Carbon;
@@ -129,7 +130,7 @@ class AdminSettingController extends Controller
         if ($request->hasFile('file')) {
             $image = $request->file('file');
             $filename = $image->getClientOriginalName();
-            $newFilename = str_random(11).str_random(20).$filename;
+            $newFilename = Str::random(11).Str::random(20).$filename;
             $newFilename = str_replace(' ', '_', $newFilename);
             // ========================================
             // หากเป็น Product จะไม่ใช้ public_path();
@@ -154,7 +155,7 @@ class AdminSettingController extends Controller
         if ($request->hasFile('icon')) {
             $image = $request->file('icon');
             $filename = $image->getClientOriginalName();
-            $newFilename = str_random(11).str_random(20).$filename;
+            $newFilename = Str::random(11).Str::random(20).$filename;
             $newFilename = str_replace(' ', '_', $newFilename);
             // ========================================
             // หากเป็น Product จะไม่ใช้ public_path();
