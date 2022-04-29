@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Setting;
 use App\Banner as banner;
-use App\Menu as menu;
-use App\genre;
 use App\CategoryTv;
+use App\genre;
+use App\Indexsetting;
+use App\Menu as menu;
+use App\Setting;
 use App\User;
 use Carbon\Carbon;
-use App\Indexsetting;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-trait AuthenticatesUsers
+trait ApplicationLoginController
 {
     use RedirectsUsers, ThrottlesLogins;
 
@@ -22,19 +22,20 @@ trait AuthenticatesUsers
      *
      * @return \Illuminate\Http\Response
      */
-    public function Main(){
-         $data['setting'] = Setting::find(1);
-         $data['category'] = genre::orderBy('id', 'asc')->get();
-         $data['category_tv'] = CategoryTv::orderBy('updated_at', 'desc')->get();
-         $data['res'] = Indexsetting::orderBy('id','asc')->first();
-         $data['menu'] = menu::orderBy('no', 'asc')->get();
-         $data['bannerA'] = banner::where('layout', 'A')->orderBy('id','asc')->get();
-         $data['bannerB'] = banner::where('layout', 'B')->orderBy('id','asc')->get();
-         $data['bannerC'] = banner::where('layout', 'C')->orderBy('id','asc')->get();
-         $data['bannerD'] = banner::where('layout', 'D')->orderBy('id','asc')->get();
-         $data['mode'] = "home";
+    public function Main()
+    {
+        $data['setting'] = Setting::find(1);
+        $data['category'] = genre::orderBy('id', 'asc')->get();
+        $data['category_tv'] = CategoryTv::orderBy('updated_at', 'desc')->get();
+        $data['res'] = Indexsetting::orderBy('id', 'asc')->first();
+        $data['menu'] = menu::orderBy('no', 'asc')->get();
+        $data['bannerA'] = banner::where('layout', 'A')->orderBy('id', 'asc')->get();
+        $data['bannerB'] = banner::where('layout', 'B')->orderBy('id', 'asc')->get();
+        $data['bannerC'] = banner::where('layout', 'C')->orderBy('id', 'asc')->get();
+        $data['bannerD'] = banner::where('layout', 'D')->orderBy('id', 'asc')->get();
+        $data['mode'] = 'home';
 
-         return $data;
+        return $data;
     }
 
     public function showLoginForm()
@@ -45,10 +46,8 @@ trait AuthenticatesUsers
         $data['keywords'] = $data['setting']->title;
         $data['description'] = $data['setting']->description;
 
-
         return view('application.login', $data);
     }
-
 
     /**
      * Handle a login request to the application.
@@ -144,29 +143,27 @@ trait AuthenticatesUsers
      */
     protected function authenticated(Request $request, $user)
     {
-       //  if(Carbon::now()->timestamp >= Auth::user()->login_expire && Auth::user()->status_login == 0{
-       //     $update_expire = User::find(Auth::user()->id);
-       //     $update_expire->ip = \Request::ip();
-       //     $update_expire->status_login = 1;
-       //     $update_expire->login_expire = Carbon::now()->addHours(24)->timestamp;
-       //     $update_expire->update();
-       // }
+        //  if(Carbon::now()->timestamp >= Auth::user()->login_expire && Auth::user()->status_login == 0{
+        //     $update_expire = User::find(Auth::user()->id);
+        //     $update_expire->ip = \Request::ip();
+        //     $update_expire->status_login = 1;
+        //     $update_expire->login_expire = Carbon::now()->addHours(24)->timestamp;
+        //     $update_expire->update();
+        // }
 
-        if(Auth::user()->status_login == 0 || Auth::user()->login_expire <= Carbon::now()->timestamp){
-           $update_expire = User::find(Auth::user()->id);
-           $update_expire->ip = \Request::ip();
-           $update_expire->status_login = 1;
-           $update_expire->login_expire = Carbon::now()->addMinute(30)->timestamp;
-           $update_expire->update();
-           $request->session()->put('player', 'jwplayer');
-       }
-       else if(Auth::user()->status_login == 1)
-       {
-           Auth::logout();
-           session()->flash('message_login', 'มีผู้ใช้งานบัญชีอยู่ ลองใหม่ในภายหลัง');
-           return redirect()->route('login');
-       }
+        if (Auth::user()->status_login == 0 || Auth::user()->login_expire <= Carbon::now()->timestamp) {
+            $update_expire = User::find(Auth::user()->id);
+            $update_expire->ip = \Request::ip();
+            $update_expire->status_login = 1;
+            $update_expire->login_expire = Carbon::now()->addMinute(30)->timestamp;
+            $update_expire->update();
+            $request->session()->put('player', 'jwplayer');
+        } elseif (Auth::user()->status_login == 1) {
+            Auth::logout();
+            session()->flash('message_login', 'มีผู้ใช้งานบัญชีอยู่ ลองใหม่ในภายหลัง');
 
+            return redirect()->route('login');
+        }
     }
 
     /**
@@ -183,6 +180,7 @@ trait AuthenticatesUsers
             return response()->json($errors, 422);
         }
         session()->flash('message_login', 'Username หรือ Password ผิดพลาด');
+
         return redirect()->back()
             ->withInput($request->only($this->username(), 'remember'))
             ->withErrors($errors);

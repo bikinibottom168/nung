@@ -107,7 +107,6 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
-
     /*
     |--------------------------------------------------------------------------
     | Logging Configuration
@@ -121,7 +120,7 @@ return [
     |
     */
 
-    'log' => "daily",
+    'log' => 'daily',
 
     // 'log_level' => env('APP_LOG_LEVEL', 'debug'),
     'log_max_files' => 5,

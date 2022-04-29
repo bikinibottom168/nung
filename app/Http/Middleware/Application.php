@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
 use Auth;
+use Closure;
 
 class Application
 {
@@ -17,7 +17,7 @@ class Application
     public function handle($request, Closure $next)
     {
         if (Auth::user()) {
-           return $next($request);
+            return $next($request);
         }
 
         return redirect('/application/login');

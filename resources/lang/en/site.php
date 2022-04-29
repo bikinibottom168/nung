@@ -5,7 +5,6 @@
         // ----- Language ----- //
         'Language' => 'EN',
 
-
         // ----- Menu ----- //
         'movie' => 'Movie',
         'series' => 'Series',
@@ -65,5 +64,3 @@
         'add_favorites' => 'Add Favorites',
         'detail' => 'Detail',
     ];
-
- ?>

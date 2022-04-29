@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
 use App\Option;
+use Closure;
 
 class ConfigRecaptcha
 {
@@ -18,9 +18,9 @@ class ConfigRecaptcha
     {
         $sitekey = option_get('recaptcha.sitekey');
         $secret = option_get('recaptcha.secret');
-        
-        config(['captcha.sitekey' => $sitekey,'captcha.secret' => $secret]);
-        
+
+        config(['captcha.sitekey' => $sitekey, 'captcha.secret' => $secret]);
+
         return $next($request);
     }
 }

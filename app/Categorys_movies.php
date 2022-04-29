@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Categorys_movies extends Model
 {
     protected $fillable = [
-        'category_id','movie_id'
+        'category_id', 'movie_id',
     ];
 
     public function genre()

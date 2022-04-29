@@ -41,5 +41,4 @@ return [
         'redirect' => 'https://idoohd.com/login/facebook/callback',
     ],
 
-
 ];

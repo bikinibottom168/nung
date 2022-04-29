@@ -2,41 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Intervention\Image\ImageManager;
-use GuzzleHttp\Client;
 use App\Moviecontact as req;
 use App\Setting;
 use Auth;
-
+use GuzzleHttp\Client;
+use Illuminate\Http\Request;
+use Intervention\Image\ImageManager;
 
 class AdminMoviecontactController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *id as 
+     *id as
      * @return \Illuminate\Http\Response
      */
-
     public function __construct()
     {
         $this->middleware('admin');
     }
 
-     public function Main()
-     {
-         $data['infosetting'] = Setting::first();
-         return $data;
-     }
+    public function Main()
+    {
+        $data['infosetting'] = Setting::first();
+
+        return $data;
+    }
 
     public function index()
     {
         $data = $this->Main();
-        $data['header_title'] = "แจ้งหนังเสีย";
-        $data['req'] = req::orderBy('moviecontacts.updated_at','desc')
+        $data['header_title'] = 'แจ้งหนังเสีย';
+        $data['req'] = req::orderBy('moviecontacts.updated_at', 'desc')
                         ->join('movies', 'moviecontacts.movie_id', 'movies.id')
                         ->select('moviecontacts.id as id_contact', 'movies.*')
                         ->paginate(15);
+
         return view('admin.page.moviecontact.moviecontact', $data);
     }
 
@@ -48,9 +48,10 @@ class AdminMoviecontactController extends Controller
     public function create()
     {
         $data = $this->Main();
-        $data['header_title'] = "เพิ่มทีวี";
+        $data['header_title'] = 'เพิ่มทีวี';
         $data['setting'] = Setting::find(1);
-        return view('admin.page.tv.create',$data);
+
+        return view('admin.page.tv.create', $data);
     }
 
     /**
@@ -61,8 +62,7 @@ class AdminMoviecontactController extends Controller
      */
     public function store(Request $request)
     {
-        if(env("DEMO",'0') == "1")
-        {
+        if (env('DEMO', '0') == '1') {
             return redirect()->back();
         }
 
@@ -78,32 +78,32 @@ class AdminMoviecontactController extends Controller
         // ถ้ามีการอัพรูป จะ resize
         //
         // ==============================================================
-        if($request->hasFile('file')){
+        if ($request->hasFile('file')) {
             $image = $request->file('file');
             $filename = $image->getClientOriginalName();
             $newFilename = str_random(11).str_random(20).$filename;
-            $newFilename = str_replace(' ','_',$newFilename);
+            $newFilename = str_replace(' ', '_', $newFilename);
             // ========================================
             // หากเป็น Product จะไม่ใช้ public_path();
             // ========================================
             $path = 'images/tv/';
-            if(env('APP_ENV') == 'production'){
+            if (env('APP_ENV') == 'production') {
                 $path = 'images/tv/';
-            }else if(env('APP_ENV') == 'local'){
+            } elseif (env('APP_ENV') == 'local') {
                 $path = public_path('images/tv/');
             }
 
             $image_save = new ImageManager; // เรียกใช้ object เพราะไม่สามารถเรียกแบบ static ได้
             $image_save->make($image->getRealPath())
-                ->resize(162,108)
+                ->resize(162, 108)
                 ->save($path.$newFilename, 90); // ลด Optimize Image
             $data->image = 'images/tv/'.$newFilename;
         }
 
         $data->save();
 
-
         session()->flash('message', 'เพิ่มช่องทีวีเรียบร้อย');
+
         return redirect()->route('admin.tv');
     }
 
@@ -132,8 +132,7 @@ class AdminMoviecontactController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(env("DEMO",'0') == "1")
-        {
+        if (env('DEMO', '0') == '1') {
             return redirect()->back();
         }
 
@@ -148,32 +147,32 @@ class AdminMoviecontactController extends Controller
         // ถ้ามีการอัพรูป จะ resize
         //
         // ==============================================================
-        if($request->hasFile('file')){
+        if ($request->hasFile('file')) {
             $image = $request->file('file');
             $filename = $image->getClientOriginalName();
             $newFilename = str_random(11).str_random(20).$filename;
-            $newFilename = str_replace(' ','_',$newFilename);
+            $newFilename = str_replace(' ', '_', $newFilename);
             // ========================================
             // หากเป็น Product จะไม่ใช้ public_path();
             // ========================================
             $path = 'images/tv/';
-            if(env('APP_ENV') == 'production'){
+            if (env('APP_ENV') == 'production') {
                 $path = 'images/tv/';
-            }else if(env('APP_ENV') == 'local'){
+            } elseif (env('APP_ENV') == 'local') {
                 $path = public_path('images/tv/');
             }
 
             $image_save = new ImageManager; // เรียกใช้ object เพราะไม่สามารถเรียกแบบ static ได้
             $image_save->make($image->getRealPath())
-                ->resize(162,108)
+                ->resize(162, 108)
                 ->save($path.$newFilename, 90); // ลด Optimize Image
             $data->image = 'images/tv/'.$newFilename;
         }
 
         $data->update();
 
-
         session()->flash('message', 'แก้ไขช่องทีวีเรียบร้อย');
+
         return redirect()->route('admin.tv');
     }
 
@@ -185,14 +184,14 @@ class AdminMoviecontactController extends Controller
      */
     public function destroy($id)
     {
-        if(env("DEMO",'0') == "1")
-        {
+        if (env('DEMO', '0') == '1') {
             return redirect()->back();
         }
-        
-        $data = req::where('id', '=' ,$id)->delete();
+
+        $data = req::where('id', '=', $id)->delete();
 
         session()->flash('message', 'ลบเรียบร้อย');
+
         return redirect()->route('admin.moviecontact');
     }
 }

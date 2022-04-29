@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Setting;
-use Intervention\Image\ImageManager;
-use GuzzleHttp\Client;
-use Carbon\Carbon;
 use App\Seo;
+use App\Setting;
 use Auth;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Illuminate\Http\Request;
+use Intervention\Image\ImageManager;
 
 class AdminSecurityController extends Controller
 {
@@ -17,35 +17,30 @@ class AdminSecurityController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
     public function __construct()
     {
         $this->middleware('admin');
     }
 
-    
-     public function Main()
-     {
-         $data['infosetting'] = Setting::first();
-         return $data;
-     }
+    public function Main()
+    {
+        $data['infosetting'] = Setting::first();
+
+        return $data;
+    }
 
     public function index(Request $req)
     {
-        if(!Auth::check())
-        {
+        if (! Auth::check()) {
             return redirect()->route('admin.login');
         }
         $data = $this->Main();
-        $data['header_title'] = "Security";
-        if($req->type)
-        {
-            $data['header_title'] = "Security - ".strtoupper($req->type);
+        $data['header_title'] = 'Security';
+        if ($req->type) {
+            $data['header_title'] = 'Security - '.strtoupper($req->type);
         }
         $data['request'] = Setting::find(1);
 
-    
-        
         return view('admin.page.security.security', $data);
     }
 
@@ -101,11 +96,10 @@ class AdminSecurityController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(env("DEMO",'0') == "1")
-        {
+        if (env('DEMO', '0') == '1') {
             return redirect()->back();
         }
-        
+
         // /** Check Domain IAMTHEME **/
         // $checkDomain = new Client;
         // $res = $checkDomain->request('GET', $url, ['http_errors' => false]);
@@ -118,8 +112,6 @@ class AdminSecurityController extends Controller
 
         // session()->flash('message', 'อัพเดทสำเร็จ');
         // return redirect()->route('admin.seo');
-
-
     }
 
     /**

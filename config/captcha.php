@@ -1,4 +1,5 @@
 <?php
+
 // use App\Option;
 // $secret = Option::where('key', 'NOCAPTCHA_SECRET')->first();
 // $secret = option_get('NOCAPTCHA_SECRET');

@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\movie;
-use App\genre;
-use App\Setting;
-use App\Seo;
-use App\Playlist;
 use App\Categorys_movies as categorys;
-use Intervention\Image\ImageManager;
-use GuzzleHttp\Client;
-use Auth;
+use App\genre;
 use App\Http\Controllers\CheckTableController as checkTable;
+use App\movie;
+use App\Playlist;
+use App\Seo;
+use App\Setting;
+use Auth;
+use GuzzleHttp\Client;
+use Illuminate\Http\Request;
+use Intervention\Image\ImageManager;
 
 class AdminMovieController extends Controller
 {
@@ -27,34 +27,34 @@ class AdminMovieController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-     public function Main()
-     {
+    public function Main()
+    {
+        $data['infosetting'] = Setting::first();
+        $data['seo'] = Seo::first();
 
-         $data['infosetting'] = Setting::first();
-         $data['seo'] = Seo::first();
-         return $data;
-     }
+        return $data;
+    }
 
     public function index()
     {
-        if(!Auth::check())
-        {
+        if (! Auth::check()) {
             return redirect()->route('admin.login');
         }
 
         $data = $this->Main();
-        $data['header_title'] = "จัดการหนัง";
-        $data['movie'] = movie::orderBy('updated_at','desc')->paginate(10);
-        $data['playlist'] = Playlist::orderBy('title','asc')->get();
+        $data['header_title'] = 'จัดการหนัง';
+        $data['movie'] = movie::orderBy('updated_at', 'desc')->paginate(10);
+        $data['playlist'] = Playlist::orderBy('title', 'asc')->get();
         $data['page'] = 'movie';
+
         return view('admin.page.movie.movie', $data);
     }
 
     public function movies()
     {
         $data = $this->Main();
-        $data['header_title'] = "จัดการหนัง - หนังทั้งหมด";
-        $data['movie'] = movie::where('type', 'movie')->orderBy('updated_at','desc')->paginate(10);
+        $data['header_title'] = 'จัดการหนัง - หนังทั้งหมด';
+        $data['movie'] = movie::where('type', 'movie')->orderBy('updated_at', 'desc')->paginate(10);
         $data['page'] = 'movies';
 
         return view('admin.page.movie.movie', $data);
@@ -63,8 +63,8 @@ class AdminMovieController extends Controller
     public function series()
     {
         $data = $this->Main();
-        $data['header_title'] = "จัดการซีรี่ย์";
-        $data['movie'] = movie::where('type', 'series')->orderBy('updated_at','desc')->paginate(10);
+        $data['header_title'] = 'จัดการซีรี่ย์';
+        $data['movie'] = movie::where('type', 'series')->orderBy('updated_at', 'desc')->paginate(10);
         $data['page'] = 'movies';
 
         return view('admin.page.movie.movie', $data);
@@ -74,8 +74,8 @@ class AdminMovieController extends Controller
     {
         $data = $this->Main();
         $data['header_title'] = $request->title;
-        $data['movie'] = movie::where('title', 'LIKE', '%'.$request->title.'%')->orderBy('updated_at','desc')->paginate(10);
-        $data['playlist'] = Playlist::orderBy('title','asc')->get();
+        $data['movie'] = movie::where('title', 'LIKE', '%'.$request->title.'%')->orderBy('updated_at', 'desc')->paginate(10);
+        $data['playlist'] = Playlist::orderBy('title', 'asc')->get();
         $data['page'] = 'movies';
 
         return view('admin.page.movie.movie', $data);
@@ -89,10 +89,11 @@ class AdminMovieController extends Controller
     public function create()
     {
         $data = $this->Main();
-        $data['header_title'] = "เพิ่มหนัง";
+        $data['header_title'] = 'เพิ่มหนัง';
         $data['category'] = genre::orderBy('title_category_eng', 'asc')->get();
         $data['setting'] = Setting::find(1);
-        return view('admin.page.movie.create',$data);
+
+        return view('admin.page.movie.create', $data);
     }
 
     /**
@@ -103,40 +104,33 @@ class AdminMovieController extends Controller
      */
     public function store(Request $request)
     {
-        if(env("DEMO",'0') == "1")
-        {
+        if (env('DEMO', '0') == '1') {
             return redirect()->back();
         }
 
         $setting = Setting::find(1);
-        $title = explode(" ",$request->title);
-        $title = implode("-",$title);
-        $title = explode("(",$title);
-        $title = implode("",$title);
-        $title = explode(")",$title);
-        $title = implode("",$title);
+        $title = explode(' ', $request->title);
+        $title = implode('-', $title);
+        $title = explode('(', $title);
+        $title = implode('', $title);
+        $title = explode(')', $title);
+        $title = implode('', $title);
 
         $check_title = movie::where('slug_title', $title);
 
-        if($check_title->count() >= 1)
-        {
-            $title = mb_substr($title, 0, 15, "UTF-8"); // ตัดสตริงออก 1 ตัว
+        if ($check_title->count() >= 1) {
+            $title = mb_substr($title, 0, 15, 'UTF-8'); // ตัดสตริงออก 1 ตัว
         }
 
         $youtube = '';
-        if(strrpos($request->youtube, 'watch?v='))
-        {
-            $youtube = explode("watch?v=", $request->youtube);
+        if (strrpos($request->youtube, 'watch?v=')) {
+            $youtube = explode('watch?v=', $request->youtube);
             $youtube = $youtube[1];
-        }
-        elseif(strrpos($request->youtube, 'embed/'))
-        {
-            $youtube = explode("/embed/", $request->youtube);
+        } elseif (strrpos($request->youtube, 'embed/')) {
+            $youtube = explode('/embed/', $request->youtube);
             $youtube = $youtube[1];
-        }
-        elseif(strrpos($request->youtube, 'youtu.be/'))
-        {
-            $youtube = explode("youtu.be/", $request->youtube);
+        } elseif (strrpos($request->youtube, 'youtu.be/')) {
+            $youtube = explode('youtu.be/', $request->youtube);
             $youtube = $youtube[1];
         }
 
@@ -148,17 +142,14 @@ class AdminMovieController extends Controller
         $data->year = $request->year;
         $data->type = $request->list_check;
         $data->resolution = $request->resolution;
-        $data->movie_hot = isset($request->movie_hot) ? $request->movie_hot : 0  ;
+        $data->movie_hot = isset($request->movie_hot) ? $request->movie_hot : 0;
         // $data->vip = '0';
         $data->sound = $request->sound;
         // $data->runtime = '0';
         // $data->new_movie = $request->new_movie;
-        if($setting->imdb == "1")
-        {
+        if ($setting->imdb == '1') {
             $data->imdb = $request->imdb;
-        }
-        else
-        {
+        } else {
             $data->score = $request->score;
             $data->runtime = $request->runtime;
             $data->director = $request->director;
@@ -170,16 +161,15 @@ class AdminMovieController extends Controller
         $data->image = '/image/not_found.jpg';
         // $data->view = '0';
         $filemovie1 = '';
-        if($data->type == "movie")
-        {
+        if ($data->type == 'movie') {
             $data->file_main = $request->file_main_1;
             $data->file_main_2 = $request->file_main_2;
             $data->file_main_3 = $request->file_main_3;
-    
+
             $data->file_openload = $request->file_openload_1;
             $data->file_openload_2 = $request->file_openload_2;
             $data->file_openload_3 = $request->file_openload_3;
-    
+
             $data->file_streamango = $request->file_streamango_1;
             $data->file_streamango_2 = $request->file_streamango_2;
             $data->file_streamango_3 = $request->file_streamango_3;
@@ -187,20 +177,18 @@ class AdminMovieController extends Controller
             $data->file_main_sub = $request->file_main_sub_1;
             $data->file_main_sub_2 = $request->file_main_sub_2;
             $data->file_main_sub_3 = $request->file_main_sub_3;
-    
+
             $data->file_openload_sub = $request->file_openload_sub_1;
             $data->file_openload_sub_2 = $request->file_openload_sub_2;
             $data->file_openload_sub_3 = $request->file_openload_sub_3;
-    
+
             $data->file_streamango_sub = $request->file_streamango_sub_1;
             $data->file_streamango_sub_2 = $request->file_streamango_sub_2;
             $data->file_streamango_sub_3 = $request->file_streamango_sub_3;
-        }
-        else if($data->type == "series")
-        {
+        } elseif ($data->type == 'series') {
             // $filemovie2 = '';
             // $filemovie3 = '';
-            for($i=0; $i< $request->countFile; $i++){
+            for ($i = 0; $i < $request->countFile; $i++) {
                 $name = 'nameFile'.$i;
 
                 $url1 = 'urlFile1_'.$i;
@@ -214,27 +202,23 @@ class AdminMovieController extends Controller
 
         $data->file_series = $filemovie1;
 
-        
-
-    
-
         // ==============================================================
         //
         // ถ้ามีการอัพรูป จะ resize
         //
         // ==============================================================
-        if($request->hasFile('file')){
+        if ($request->hasFile('file')) {
             $image = $request->file('file');
             $filename = $image->getClientOriginalName();
             $newFilename = str_random(11).str_random(20).$filename;
-            $newFilename = str_replace(' ','_',$newFilename);
+            $newFilename = str_replace(' ', '_', $newFilename);
             // ========================================
             // หากเป็น Product จะไม่ใช้ public_path();
             // ========================================
             $path = 'images/movie/';
-            if(env('APP_ENV') == 'production'){
+            if (env('APP_ENV') == 'production') {
                 $path = 'images/movie/';
-            }else if(env('APP_ENV') == 'local'){
+            } elseif (env('APP_ENV') == 'local') {
                 $path = public_path('images/movie/');
             }
             $image->move($path, $newFilename);
@@ -246,18 +230,18 @@ class AdminMovieController extends Controller
         }
 
         // ภาพหน้าปก POSTER
-        if($request->hasFile('file_poster')){
+        if ($request->hasFile('file_poster')) {
             $image_2 = $request->file('file_poster');
             $filename_2 = $image_2->getClientOriginalName();
             $newFilename_2 = str_random(11).str_random(20).$filename_2;
-            $newFilename_2 = str_replace(' ','_',$newFilename_2);
+            $newFilename_2 = str_replace(' ', '_', $newFilename_2);
             // ========================================
             // หากเป็น Product จะไม่ใช้ public_path();
             // ========================================
             $path = 'images/movie/';
-            if(env('APP_ENV') == 'production'){
+            if (env('APP_ENV') == 'production') {
                 $path = 'images/movie/';
-            }else if(env('APP_ENV') == 'local'){
+            } elseif (env('APP_ENV') == 'local') {
                 $path = public_path('images/movie/');
             }
             $image_2->move($path, $newFilename);
@@ -270,7 +254,7 @@ class AdminMovieController extends Controller
         // กรณีมีการใช้ IMDB
         // $setting->imdb == 1 เช็คว่าเปิดให้ใส่ imdb หรือไม่
         // ==============================================================
-        if(strpos($request->imdb, "tt") !== false && $setting->imdb == 1){
+        if (strpos($request->imdb, 'tt') !== false && $setting->imdb == 1) {
 
             // ==============================================================
             //
@@ -283,20 +267,17 @@ class AdminMovieController extends Controller
             $client = new Client;
             $res = $client->request('GET', 'http://www.imdb.com/title/'.$request->imdb.'/', ['http_errors' => false]);
 
-            if($res->getStatusCode() != "404" || $res->getStatusCode() != "403" || $res->getStatusCode() != "500" || $res->getStatusCode() != "502" || $res->getStatusCode() != "503")
-            {
+            if ($res->getStatusCode() != '404' || $res->getStatusCode() != '403' || $res->getStatusCode() != '500' || $res->getStatusCode() != '502' || $res->getStatusCode() != '503') {
                 $getBody = $res->getBody();
                 $getBody = urldecode($getBody);
                 preg_match('/ratingValue": "(.*?)"/', $getBody, $score);
-                if(!empty($score[1]))
-                {
+                if (! empty($score[1])) {
                     $data->score = $score[1];
                 }
-
             }
             // preg_match('/<time itemprop="duration" datetime="PT(.*?)M">/', $getBody, $runtime);
             // $data->runtime = $runtime[1][0]." นาที";
-            $data->runtime = "0 นาที";
+            $data->runtime = '0 นาที';
         }
 
         $data->save();
@@ -308,13 +289,12 @@ class AdminMovieController extends Controller
         //
         // ==============================================================
         $countCate = 0;
-        $data = Movie::orderBy('created_at','desc')->first();
+        $data = Movie::orderBy('created_at', 'desc')->first();
         $tem_ca = '';
-        $delete_data_category_movie = categorys::where('movie_id',$data->id)->delete(); //ลบหมวดหมู่เก่าออกก่อน
+        $delete_data_category_movie = categorys::where('movie_id', $data->id)->delete(); //ลบหมวดหมู่เก่าออกก่อน
         $request->category = array_unique($request->category);
-        foreach($request->category as $tmp_category)
-        {
-            if($tmp_category != 0){
+        foreach ($request->category as $tmp_category) {
+            if ($tmp_category != 0) {
                 $data_cate = new categorys;
                 $data_cate->category_id = $tmp_category;
                 $data_cate->movie_id = $data->id;
@@ -344,9 +324,10 @@ class AdminMovieController extends Controller
         //     $data_cate->movie_id = $id;
         //     $data_cate->save();
         // }
-        log_post("Create","เพิ่มหนัง $data->title",Auth::user()->email);
+        log_post('Create', "เพิ่มหนัง $data->title", Auth::user()->email);
 
         session()->flash('message', 'เพิ่มหนังเรียบร้อย');
+
         return redirect()->route('admin.movie');
     }
 
@@ -370,11 +351,12 @@ class AdminMovieController extends Controller
     public function edit($id)
     {
         $data = $this->Main();
-        $data['header_title'] = "แก้ไขหนัง";
+        $data['header_title'] = 'แก้ไขหนัง';
         $data['movie'] = movie::find($id);
         $data['category'] = genre::orderBy('title_category_eng', 'asc')->get();
         $data['setting'] = Setting::find(1);
-        $data['selected'] = $data['movie']->CategoryMovie()->where('movie_id',$data['movie']->id)->orderBy('updated_at', 'desc')->limit(6)->get();
+        $data['selected'] = $data['movie']->CategoryMovie()->where('movie_id', $data['movie']->id)->orderBy('updated_at', 'desc')->limit(6)->get();
+
         return view('admin.page.movie.edit', $data);
     }
 
@@ -387,70 +369,60 @@ class AdminMovieController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(env("DEMO",'0') == "1")
-        {
+        if (env('DEMO', '0') == '1') {
             return redirect()->back();
         }
 
-        if(env("DEMO",'0') == "1")
-        {
+        if (env('DEMO', '0') == '1') {
             return redirect()->back();
         }
-        
+
         $setting = Setting::find(1);
-        $title = explode(" ",$request->title);
-        $title = implode("-",$title);
-        $title = explode("(",$title);
-        $title = implode("",$title);
-        $title = explode(")",$title);
-        $title = implode("",$title);
-        $title = explode(".",$title);
-        $title = implode("",$title);
+        $title = explode(' ', $request->title);
+        $title = implode('-', $title);
+        $title = explode('(', $title);
+        $title = implode('', $title);
+        $title = explode(')', $title);
+        $title = implode('', $title);
+        $title = explode('.', $title);
+        $title = implode('', $title);
 
         $check_title = movie::where('slug_title', $title);
 
-        if($check_title->count() >= 2)
-        {
+        if ($check_title->count() >= 2) {
             $title = mb_substr($title, 0, 15, 'UTF-8'); // ตัดสตริงออก
         }
 
         $youtube = '';
-        if(strrpos($request->youtube, 'watch?v='))
-        {
-            $youtube = explode("watch?v=", $request->youtube);
+        if (strrpos($request->youtube, 'watch?v=')) {
+            $youtube = explode('watch?v=', $request->youtube);
+            $youtube = $youtube[1];
+        } elseif (strrpos($request->youtube, 'embed/')) {
+            $youtube = explode('/embed/', $request->youtube);
+            $youtube = $youtube[1];
+        } elseif (strrpos($request->youtube, 'youtu.be/')) {
+            $youtube = explode('youtu.be/', $request->youtube);
             $youtube = $youtube[1];
         }
-        elseif(strrpos($request->youtube, 'embed/'))
-        {
-            $youtube = explode("/embed/", $request->youtube);
-            $youtube = $youtube[1];
-        }
-        elseif(strrpos($request->youtube, 'youtu.be/'))
-        {
-            $youtube = explode("youtu.be/", $request->youtube);
-            $youtube = $youtube[1];
-        }
-        
-        
+
         $data = movie::findOrfail($id);
         $data->title = $request->title;
         $data->slug_title = $title;
         $data->youtube = $youtube;
         $data->description = $request->description;
         $data->api_update = 0;
-        $data->movie_hot = isset($request->movie_hot) ? $request->movie_hot : 0  ;
+        $data->movie_hot = isset($request->movie_hot) ? $request->movie_hot : 0;
 
         $filemovie1 = '';
-        if($data->type == "movie")
-        {
+        if ($data->type == 'movie') {
             $data->file_main = $request->file_main_1;
             $data->file_main_2 = $request->file_main_2;
             $data->file_main_3 = $request->file_main_3;
-    
+
             $data->file_openload = $request->file_openload_1;
             $data->file_openload_2 = $request->file_openload_2;
             $data->file_openload_3 = $request->file_openload_3;
-    
+
             $data->file_streamango = $request->file_streamango_1;
             $data->file_streamango_2 = $request->file_streamango_2;
             $data->file_streamango_3 = $request->file_streamango_3;
@@ -458,20 +430,18 @@ class AdminMovieController extends Controller
             $data->file_main_sub = $request->file_main_sub_1;
             $data->file_main_sub_2 = $request->file_main_sub_2;
             $data->file_main_sub_3 = $request->file_main_sub_3;
-    
+
             $data->file_openload_sub = $request->file_openload_sub_1;
             $data->file_openload_sub_2 = $request->file_openload_sub_2;
             $data->file_openload_sub_3 = $request->file_openload_sub_3;
-    
+
             $data->file_streamango_sub = $request->file_streamango_sub_1;
             $data->file_streamango_sub_2 = $request->file_streamango_sub_2;
             $data->file_streamango_sub_3 = $request->file_streamango_sub_3;
-        }
-        else if($data->type == "series")
-        {
+        } elseif ($data->type == 'series') {
             // $filemovie2 = '';
             // $filemovie3 = '';
-            for($i=0; $i< $request->countFile; $i++){
+            for ($i = 0; $i < $request->countFile; $i++) {
                 $name = 'nameFile'.$i;
 
                 $url1 = 'urlFile1_'.$i;
@@ -485,14 +455,10 @@ class AdminMovieController extends Controller
 
         $data->file_series = $filemovie1;
 
-
         $data->year = $request->year;
-        if($setting->imdb == "1")
-        {
+        if ($setting->imdb == '1') {
             $data->imdb = $request->imdb;
-        }
-        else
-        {
+        } else {
             $data->score = $request->score;
             $data->runtime = $request->runtime;
         }
@@ -508,7 +474,7 @@ class AdminMovieController extends Controller
         // กรณีมีการใช้ IMDB
         // $setting->imdb == 1 เช็คว่าเปิดให้ใส่ imdb หรือไม่
         // ==============================================================
-        if(strpos($request->imdb, "tt") !== false && $setting->imdb == 1){
+        if (strpos($request->imdb, 'tt') !== false && $setting->imdb == 1) {
 
             // ==============================================================
             //
@@ -520,20 +486,17 @@ class AdminMovieController extends Controller
 
             $client = new Client;
             $res = $client->request('GET', 'http://www.imdb.com/title/'.$request->imdb.'/', ['http_errors' => false]);
-            if($res->getStatusCode() != "404" || $res->getStatusCode() != "403" || $res->getStatusCode() != "500" || $res->getStatusCode() != "502" || $res->getStatusCode() != "503")
-            {
+            if ($res->getStatusCode() != '404' || $res->getStatusCode() != '403' || $res->getStatusCode() != '500' || $res->getStatusCode() != '502' || $res->getStatusCode() != '503') {
                 $getBody = $res->getBody();
                 $getBody = urldecode($getBody);
                 preg_match('/ratingValue": "(.*?)"/', $getBody, $score);
-                if(!empty($score[1]))
-                {
+                if (! empty($score[1])) {
                     $data->score = $score[1];
                 }
-
             }
             // preg_match('/<time itemprop="duration" datetime="PT(.*?)M">/', $getBody, $runtime);
             // $data->runtime = $runtime[1][0]." นาที";
-            $data->runtime = "0 นาที";
+            $data->runtime = '0 นาที';
         }
         //จะแปลงข้อมูลให้เป็น {{}}
 
@@ -561,34 +524,34 @@ class AdminMovieController extends Controller
         // // ถ้ามีการอัพรูป จะ resize
         // //
         // // ==============================================================
-        if($request->hasFile('file')){
+        if ($request->hasFile('file')) {
             $image = $request->file('file');
             $filename = $image->getClientOriginalName();
             $newFilename = str_random(11).str_random(20).$filename;
-            $newFilename = str_replace(' ','_',$newFilename);
+            $newFilename = str_replace(' ', '_', $newFilename);
             $path = 'images/movie/';
-            if(env('APP_ENV') == 'production'){
+            if (env('APP_ENV') == 'production') {
                 $path = 'images/movie/';
-            }else if(env('APP_ENV') == 'local'){
+            } elseif (env('APP_ENV') == 'local') {
                 $path = public_path('images/movie/');
             }
             $image_save = new ImageManager; // เรียกใช้ object เพราะไม่สามารถเรียกแบบ static ได้
             $image_save->make($image->getRealPath())
-                ->resize(230,341)
+                ->resize(230, 341)
                 ->save($path.$newFilename, 90); // ลด Optimize Image
             $data->image = 'images/movie/'.$newFilename;
         }
 
         // ภาพหนังปกหนัง
-        if($request->hasFile('file_poster')){
+        if ($request->hasFile('file_poster')) {
             $image = $request->file('file_poster');
             $filename = $image->getClientOriginalName();
             $newFilename = str_random(11).str_random(20).$filename;
-            $newFilename = str_replace(' ','_',$newFilename);
+            $newFilename = str_replace(' ', '_', $newFilename);
             $path = 'images/movie/';
-            if(env('APP_ENV') == 'production'){
+            if (env('APP_ENV') == 'production') {
                 $path = 'images/movie/';
-            }else if(env('APP_ENV') == 'local'){
+            } elseif (env('APP_ENV') == 'local') {
                 $path = public_path('images/movie/');
             }
             $image_save = new ImageManager; // เรียกใช้ object เพราะไม่สามารถเรียกแบบ static ได้
@@ -623,11 +586,10 @@ class AdminMovieController extends Controller
         // เอา Categorys ออกจาก เพื่อเพิ่มใหม่
         //
         // ==============================================================
-        $delete_data_category_movie = categorys::where('movie_id',$data->id)->delete(); //ลบหมวดหมู่เก่าออกก่อน
+        $delete_data_category_movie = categorys::where('movie_id', $data->id)->delete(); //ลบหมวดหมู่เก่าออกก่อน
         $request->category = array_unique($request->category);
-        foreach($request->category as $tmp_category)
-        {
-            if($tmp_category != 0){
+        foreach ($request->category as $tmp_category) {
+            if ($tmp_category != 0) {
                 $data_cate = new categorys;
                 $data_cate->category_id = $tmp_category;
                 $data_cate->movie_id = $data->id;
@@ -652,9 +614,10 @@ class AdminMovieController extends Controller
         //     $data_cate->save();
         // }
 
-        log_post("Update","อัพเดทหนัง $data->title",Auth::user()->email);
+        log_post('Update', "อัพเดทหนัง $data->title", Auth::user()->email);
 
         session()->flash('message', 'แก้ไขหนังเรียบร้อย');
+
         return redirect()->route('admin.movie');
     }
 
@@ -666,16 +629,16 @@ class AdminMovieController extends Controller
      */
     public function destroy($id)
     {
-        if(env("DEMO",'0') == "1")
-        {
+        if (env('DEMO', '0') == '1') {
             return redirect()->back();
         }
-        
+
         $data = movie::find($id)->delete();
 
-        log_post("Delete","ลบหนัง $id",Auth::user()->email);
+        log_post('Delete', "ลบหนัง $id", Auth::user()->email);
 
         session()->flash('message', 'ลบเรียบร้อย');
+
         return redirect()->route('admin.movie');
     }
 }

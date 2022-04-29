@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Setting;
-use Intervention\Image\ImageManager;
-use GuzzleHttp\Client;
-use Carbon\Carbon;
 use Auth;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Illuminate\Http\Request;
+use Intervention\Image\ImageManager;
 
 class AdminSettingController extends Controller
 {
@@ -16,26 +16,25 @@ class AdminSettingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
     public function __construct()
     {
         $this->middleware('admin');
     }
-    
-     public function Main()
-     {
-         $data['infosetting'] = Setting::first();
-         return $data;
-     }
+
+    public function Main()
+    {
+        $data['infosetting'] = Setting::first();
+
+        return $data;
+    }
 
     public function index(Request $req)
     {
-        if(!Auth::check())
-        {
+        if (! Auth::check()) {
             return redirect()->route('admin.login');
         }
         $data = $this->Main();
-        $data['header_title'] = "Setting - ".strtoupper($req->type);
+        $data['header_title'] = 'Setting - '.strtoupper($req->type);
         $data['request'] = Setting::find(1);
 
         return view('admin.page.setting.setting', $data);
@@ -93,96 +92,92 @@ class AdminSettingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(env("DEMO",'0') == "1")
-        {
+        if (env('DEMO', '0') == '1') {
             return redirect()->back();
         }
 
-        
-    
         // /** Check Domain IAMTHEME **/
         // $checkDomain = new Client;
         // $res = $checkDomain->request('GET', $url, ['http_errors' => false]);
 
         $data = Setting::find($id);
 
-            $data->domain = $request->domain;
-            $data->title = $request->title;
-            $data->description = $request->description;
-            $data->keyword = $request->keyword;
-            $data->header = $request->header;
-            $data->footer = $request->footer;
-            $data->imdb = 1;
-            // $data->facebook = $request->facebook;
-            // Time Skip
-            $data->time_skip = $request->time_skip;
-            // $data->facebook_login = $request->facebook_login;
-            // $data->twitter = $request->twitter;
-            // $data->tmpay = $request->tmpay;
-            // $data->texthome = $request->texthome;
-            // $data->textrun = $request->textrun;
-            // $data->howto = $request->howto;
-            // $data->apk = $request->apk;
-            // $data->googleplay = $request->googleplay;
-            // $data->textrun_color = $request->textrun_color;
-            // $data->banner_status = $request->banner_status;
-            // $data->status_online = $request->status_online;
-            // $data->user_online = $request->user_online;
-            // $data->status_loadbalance = $request->status_loadbalance;
-            $data->ssl = $request->ssl;
-            if($request->hasFile('file')){
-                $image = $request->file('file');
-                $filename = $image->getClientOriginalName();
-                $newFilename = str_random(11).str_random(20).$filename;
-                $newFilename = str_replace(' ','_', $newFilename);
-                // ========================================
-                // หากเป็น Product จะไม่ใช้ public_path();
-                // ========================================
+        $data->domain = $request->domain;
+        $data->title = $request->title;
+        $data->description = $request->description;
+        $data->keyword = $request->keyword;
+        $data->header = $request->header;
+        $data->footer = $request->footer;
+        $data->imdb = 1;
+        // $data->facebook = $request->facebook;
+        // Time Skip
+        $data->time_skip = $request->time_skip;
+        // $data->facebook_login = $request->facebook_login;
+        // $data->twitter = $request->twitter;
+        // $data->tmpay = $request->tmpay;
+        // $data->texthome = $request->texthome;
+        // $data->textrun = $request->textrun;
+        // $data->howto = $request->howto;
+        // $data->apk = $request->apk;
+        // $data->googleplay = $request->googleplay;
+        // $data->textrun_color = $request->textrun_color;
+        // $data->banner_status = $request->banner_status;
+        // $data->status_online = $request->status_online;
+        // $data->user_online = $request->user_online;
+        // $data->status_loadbalance = $request->status_loadbalance;
+        $data->ssl = $request->ssl;
+        if ($request->hasFile('file')) {
+            $image = $request->file('file');
+            $filename = $image->getClientOriginalName();
+            $newFilename = str_random(11).str_random(20).$filename;
+            $newFilename = str_replace(' ', '_', $newFilename);
+            // ========================================
+            // หากเป็น Product จะไม่ใช้ public_path();
+            // ========================================
+            $path = 'images/logo/';
+            if (env('APP_ENV') == 'production') {
                 $path = 'images/logo/';
-                if(env('APP_ENV') == 'production'){
-                    $path = 'images/logo/';
-                }else if(env('APP_ENV') == 'local'){
-                    $path = public_path('images/logo/');
-                }
+            } elseif (env('APP_ENV') == 'local') {
+                $path = public_path('images/logo/');
+            }
 
-                $image_save = new ImageManager;
-                $image_save->make($image->getRealPath())
+            $image_save = new ImageManager;
+            $image_save->make($image->getRealPath())
                     // ->resize(135,69)
-                    ->resize(null, 100, function($constraint) {
+                    ->resize(null, 100, function ($constraint) {
                         $constraint->aspectRatio();
                     })
                     ->save($path.$newFilename, 100);
-                $data->logo = 'images/logo/'.$newFilename;
-            }
+            $data->logo = 'images/logo/'.$newFilename;
+        }
 
-            if($request->hasFile('icon')){
-                $image = $request->file('icon');
-                $filename = $image->getClientOriginalName();
-                $newFilename = str_random(11).str_random(20).$filename;
-                $newFilename = str_replace(' ','_', $newFilename);
-                // ========================================
-                // หากเป็น Product จะไม่ใช้ public_path();
-                // ========================================
+        if ($request->hasFile('icon')) {
+            $image = $request->file('icon');
+            $filename = $image->getClientOriginalName();
+            $newFilename = str_random(11).str_random(20).$filename;
+            $newFilename = str_replace(' ', '_', $newFilename);
+            // ========================================
+            // หากเป็น Product จะไม่ใช้ public_path();
+            // ========================================
+            $path = 'images/logo/';
+            if (env('APP_ENV') == 'production') {
                 $path = 'images/logo/';
-                if(env('APP_ENV') == 'production'){
-                    $path = 'images/logo/';
-                }else if(env('APP_ENV') == 'local'){
-                    $path = public_path('images/logo/');
-                }
-    
-                $image_save = new ImageManager;
-                $image_save->make($image->getRealPath())
-                    ->save($path.$newFilename, 100);
-                $data->icon = 'images/logo/'.$newFilename;
+            } elseif (env('APP_ENV') == 'local') {
+                $path = public_path('images/logo/');
             }
 
-            $data->update();
+            $image_save = new ImageManager;
+            $image_save->make($image->getRealPath())
+                    ->save($path.$newFilename, 100);
+            $data->icon = 'images/logo/'.$newFilename;
+        }
 
-            log_post("Update","อัพเดท Setting",Auth::user()->email);
-            session()->flash('message', 'อัพเดทสำเร็จ');
-            return redirect(route('admin.setting')."?type="."general");
+        $data->update();
 
+        log_post('Update', 'อัพเดท Setting', Auth::user()->email);
+        session()->flash('message', 'อัพเดทสำเร็จ');
 
+        return redirect(route('admin.setting').'?type='.'general');
     }
 
     /**

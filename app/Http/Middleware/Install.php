@@ -16,7 +16,7 @@ class Install
      */
     public function handle($request, Closure $next)
     {
-        if (!Schema::hasTable('settings')) {
+        if (! Schema::hasTable('settings')) {
             return redirect()->route('install');
         }
 

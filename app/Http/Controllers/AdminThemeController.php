@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Setting;
-use Intervention\Image\ImageManager;
-use GuzzleHttp\Client;
-use Carbon\Carbon;
 use App\Seo;
+use App\Setting;
 use Auth;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Illuminate\Http\Request;
+use Intervention\Image\ImageManager;
 
 class AdminThemeController extends Controller
 {
@@ -17,29 +17,28 @@ class AdminThemeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
     public function __construct()
     {
         $this->middleware('admin');
     }
 
-    
-     public function Main()
-     {
-         $data['infosetting'] = Setting::first();
-         return $data;
-     }
+    public function Main()
+    {
+        $data['infosetting'] = Setting::first();
+
+        return $data;
+    }
 
     public function index(Request $req)
     {
-        if(!Auth::check())
-        {
+        if (! Auth::check()) {
             return redirect()->route('admin.login');
         }
         $data = $this->Main();
-        $data['header_title'] = "THEME ".strtoupper($req->type);
+        $data['header_title'] = 'THEME '.strtoupper($req->type);
 
         $data['request'] = Setting::find(1);
+
         return view('admin.page.theme.theme', $data);
     }
 
@@ -95,11 +94,10 @@ class AdminThemeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(env("DEMO",'0') == "1")
-        {
+        if (env('DEMO', '0') == '1') {
             return redirect()->back();
         }
-        
+
         // /** Check Domain IAMTHEME **/
         // $checkDomain = new Client;
         // $res = $checkDomain->request('GET', $url, ['http_errors' => false]);
@@ -111,9 +109,8 @@ class AdminThemeController extends Controller
         $data->update();
 
         session()->flash('message', 'อัพเดทสำเร็จ');
+
         return redirect()->route('admin.seo');
-
-
     }
 
     /**

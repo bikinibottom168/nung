@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
 use App\genre as category;
 use App\Setting;
 use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class AdminCategoryController extends Controller
 {
@@ -15,34 +15,32 @@ class AdminCategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
     public function __construct()
     {
         $this->middleware('admin');
     }
 
-     public function Main()
-     {
-         $data['infosetting'] = Setting::first();
-         return $data;
-     }
+    public function Main()
+    {
+        $data['infosetting'] = Setting::first();
 
+        return $data;
+    }
 
     public function index()
     {
-        if(!Auth::check())
-        {
+        if (! Auth::check()) {
             return redirect()->route('admin.login');
         }
 
-        if (!Schema::hasColumn('genres', 'description')) {
-            Schema::table('genres', function($table){
+        if (! Schema::hasColumn('genres', 'description')) {
+            Schema::table('genres', function ($table) {
                 $table->text('description')->nullable();
             });
         }
 
         $data = $this->Main();
-        $data['header_title'] = "จัดการหมวดหมู่";
+        $data['header_title'] = 'จัดการหมวดหมู่';
         // $data['request'] = category::where('split', '0')->orderBy('created_at', 'asc')->get();
         $data['request'] = category::orderBy('created_at', 'asc')->get();
 
@@ -59,14 +57,16 @@ class AdminCategoryController extends Controller
     public function create()
     {
         $data = $this->Main();
-        $data['header_title'] = "เพิ่มหมวดหมู่";
+        $data['header_title'] = 'เพิ่มหมวดหมู่';
+
         return view('admin.page.category.create', $data);
     }
 
     public function createsplit()
     {
         $data = $this->Main();
-        $data['header_title'] = "เพิ่มหมวดหมู่แบบแยก";
+        $data['header_title'] = 'เพิ่มหมวดหมู่แบบแยก';
+
         return view('admin.page.category.createsplit', $data);
     }
 
@@ -78,8 +78,7 @@ class AdminCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        if(env("DEMO",'0') == "1")
-        {
+        if (env('DEMO', '0') == '1') {
             return redirect()->back();
         }
 
@@ -91,9 +90,10 @@ class AdminCategoryController extends Controller
         $data->type_category = $request->type_category;
         $data->save();
 
-        log_post("Create","สร้างหมวดหมู่ $data->title_category",Auth::user()->email);
+        log_post('Create', "สร้างหมวดหมู่ $data->title_category", Auth::user()->email);
 
-        session()->flash('message', "เพิ่มหมวดหมู่สำเร็จ");
+        session()->flash('message', 'เพิ่มหมวดหมู่สำเร็จ');
+
         return redirect()->route('admin.category');
     }
 
@@ -118,7 +118,7 @@ class AdminCategoryController extends Controller
     {
         $data = $this->Main();
         $data['request'] = category::find($id);
-        $data['header_title'] = "แก้ไขหมวดหมู่";
+        $data['header_title'] = 'แก้ไขหมวดหมู่';
 
         return view('admin.page.category.edit', $data);
     }
@@ -127,7 +127,7 @@ class AdminCategoryController extends Controller
     {
         $data = $this->Main();
         $data['request'] = category::find($id);
-        $data['header_title'] = "แก้ไขหมวดหมู่แบบแยก";
+        $data['header_title'] = 'แก้ไขหมวดหมู่แบบแยก';
 
         return view('admin.page.category.editsplit', $data);
     }
@@ -141,8 +141,7 @@ class AdminCategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(env("DEMO",'0') == "1")
-        {
+        if (env('DEMO', '0') == '1') {
             return redirect()->back();
         }
 
@@ -155,9 +154,10 @@ class AdminCategoryController extends Controller
         $data->type_category = $request->type_category;
         $data->update();
 
-        log_post("Update","อัพเดทหมวดหมู่ $data->title_category",Auth::user()->email);
+        log_post('Update', "อัพเดทหมวดหมู่ $data->title_category", Auth::user()->email);
 
-        session()->flash('message', "แก้ไขหมวดหมู่สำเร็จ");
+        session()->flash('message', 'แก้ไขหมวดหมู่สำเร็จ');
+
         return redirect()->route('admin.category');
     }
 
@@ -169,16 +169,16 @@ class AdminCategoryController extends Controller
      */
     public function destroy($id)
     {
-        if(env("DEMO",'0') == "1")
-        {
+        if (env('DEMO', '0') == '1') {
             return redirect()->back();
         }
-        
-        $data = category::where('id',$id)->delete();
 
-        log_post("Delete","ลบหมวดหมู่ $id",Auth::user()->email);
+        $data = category::where('id', $id)->delete();
+
+        log_post('Delete', "ลบหมวดหมู่ $id", Auth::user()->email);
 
         session()->flash('message', 'ลบเรียบร้อย');
+
         return redirect()->route('admin.category');
     }
 }
