@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Str;
 use App\Categorys_movies as categorys;
 use App\genre;
 use App\Http\Controllers\CheckTableController as checkTable;
@@ -13,6 +12,7 @@ use App\Setting;
 use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
 
 class AdminIammovieController extends Controller
